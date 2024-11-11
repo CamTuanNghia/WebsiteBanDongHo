@@ -1,0 +1,69 @@
+﻿@model WatchStore.Models.Cart
+
+<script src="~/Public/js/target.min.js"></script>
+
+<header class="main-menu-area">
+    <div class="container">
+        <div class="row">
+            @if (Model != null && Model.CartDetails != null && Model.CartDetails.Any())
+            {
+                <div class="col-lg-2 col-sm-12 col-xs-12 pull-right shopingcartarea">
+                    <div class="shopping-cart-out pull-right">
+                        <div class="shopping-cart">
+                            <a class="shop-link" href="~/gio-hang" title="Giỏ hàng">
+                                <i class="fa fa-shopping-cart cart-icon"></i>
+                                <b>Giỏ hàng</b>
+                                <span class="ajax-cart-quantity">@Model.CartDetails.Sum(c => c.Quantity)</span>
+                            </a>
+                            @{
+                                double total = 0;
+                            }
+                            @foreach (var item in Model.CartDetails)
+                            {
+                                total += (item.Price * item.Quantity);
+                                <div class="shipping-cart-overly">
+                                    <div class="shipping-item">
+                                        <a href="#"><span class="cross-icon"><i class="fa fa-times-circle"></i></span></a>
+                                        <div class="shipping-item-image">
+                                            <a href="~/@item.Product.Slug"><img src="~/Public/library/product/@item.Product.Image" width="80px" alt="@item.Product.Name" /></a>
+                                        </div>
+                                        <div class="shipping-item-text">
+                                            <span>@item.Quantity<span class="pro-quan-x">x</span> <a href="~/@item.Product.Slug" class="pro-cat">@item.Product.Name</a></span>
+                                            <span class="pro-quality"><a href="~/@item.Product.Slug">@item.Product.Name</a></span>
+                                            <p>Đơn giá: @item.Price.ToString("N0") ₫</p>
+                                        </div>
+                                    </div>
+                                    <div class="shipping-total-bill">
+                                        <div class="total-shipping-prices">
+                                            <span class="shipping-total">@total.ToString("N0")₫</span>
+                                            <span>Tổng</span>
+                                        </div>
+                                    </div>
+                                    <div class="shipping-checkout-btn">
+                                        <a href="thanh-toan" id="login_cart">Thanh toán<i class="fa fa-chevron-right"></i></a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-lg-2 col-sm-12 col-xs-12 pull-right shopingcartarea">
+                    <div class="shopping-cart-out pull-right">
+                        <div class="shopping-cart">
+                            <a class="shop-link" href="~/gio-hang" title="Giỏ hàng rỗng">
+                                <i class="fa fa-shopping-cart cart-icon"></i>
+                                <b>Giỏ hàng</b>
+                                <span class="ajax-cart-quantity slc">0</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+            @Html.Action("MainMenu", "Module")
+        </div>
+        @Html.Action("MainMenuMobile", "Module")
+    </div>
+</header>

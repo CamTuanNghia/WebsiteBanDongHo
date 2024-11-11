@@ -1,0 +1,158 @@
+﻿@model WatchStore.Models.CheckoutViewModel
+
+@{
+    ViewBag.Title = "Thanh toán";
+    Layout = "~/Views/Shared/_LayoutSite.cshtml";
+}
+
+<script src="~/Public/js/target.min.js"></script>
+@Html.Partial("_Nofit")
+<section class="main-content-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="bstore-breadcrumb">
+                    <a href="~/">Trang chủ</a>
+                    <span><i class="fa fa-caret-right"></i></span>
+                    <span>Giỏ hàng</span>
+                </div>
+            </div>
+        </div>
+        @if (Model.Cart == null || !Model.Cart.CartDetails.Any())
+        {
+            <h1>Giỏ hàng rỗng</h1>
+        }
+        else
+        {
+            <form method="POST" action="~/Cart/Payment">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="cart-summary">
+                                <thead>
+                                    <tr>
+                                        <th class="cart-product">ID</th>
+                                        <th class="cart-product">Sản phẩm</th>
+                                        <th class="cart-avail text-center">Đơn giá</th>
+                                        <th class="cart-unit text-right">Unit price</th>
+                                        <th class="cart_quantity text-center">Số lượng</th>
+                                        <th class="cart-total text-right">Thành tiền</th>
+                                        <th class="cart-delete">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ double TongTien = 0; }
+                                    @foreach (var c in Model.Cart.CartDetails)
+                                    {
+                                        TongTien += (c.Price * c.Quantity);
+                                        <tr>
+                                            <td class="cart-avail">@c.ProductId</td>
+                                            <td class="cart-product">
+                                                <a href="~/@c.Product.Slug"><img alt="Blouse" src="~/Public/library/product/@c.Product.Image"></a>
+                                            </td>
+                                            <td class="cart-description">
+                                                <p class="product-name"><a href="~/@c.Product.Slug">@c.Product.Name</a></p>
+                                            </td>
+                                            <td class="cart-unit">
+                                                <ul class="price text-right">
+                                                    <li class="price">@c.Price.ToString("N0")₫</li>
+                                                </ul>
+                                            </td>
+                                            <td class="cart_quantity text-center">
+                                                <div class="cart-plus-minus-button">
+                                                    <input class="cart-plus-minus" type="number" value="@c.Quantity" min="1" data-id="@c.ProductId" disabled>
+                                                </div>
+                                            </td>
+                                            <td class="cart-total">
+                                                <span class="price">@((c.Price * c.Quantity).ToString("N0"))₫</span>
+                                            </td>
+                                            <td class="cart-delete text-center">
+                                                <span>
+                                                    <a href="cart/removeall"><i class="fa fa-trash-o"></i></a>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="cart-total-price">
+                                        <td class="cart_voucher" colspan="3" rowspan="4"></td>
+                                        <td class="text-right" colspan="3">Tiền thanh toán</td>
+                                        <td id="total_product" class="price" colspan="1">@TongTien.ToString("N0")₫</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right" colspan="3">Tiền Ship</td>
+                                        <td id="total_shipping" class="price" colspan="1">0 ₫</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right" colspan="3">Voucher giảm giá</td>
+                                        <td class="price" colspan="1">0 ₫</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="total-price-container text-right" colspan="3">
+                                            <span>Tổng</span>
+                                        </td>
+                                        <td id="total-price-container" class="price" colspan="1">
+                                            <span id="total-price">@TongTien.ToString("N0")₫</span>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Thông tin giao hàng</label>
+                            <div class="form-group primary-form-group">
+                                <label for="name">Họ tên</label>
+                                <input type="text" id="name" name="FullName" value="@Model.User.FullName" class="form-control">
+                            </div>
+                            <div class="form-group primary-form-group">
+                                <label for="phone">SĐT</label>
+                                <input type="number" id="phone" name="Phone" value="@Model.User.Phone" class="form-control">
+                            </div>
+                            <div class="form-group primary-form-group">
+                                <label for="address">Địa chỉ</label>
+                                <input type="text" id="address" name="Address" value="@Model.User.Address" class="form-control">
+                            </div>
+                            <div class="form-group primary-form-group">
+                                <label for="email">Địa chỉ Email</label>
+                                <input type="text" id="email" name="Email" value="@Model.User.Email" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-5">
+                            <label style="margin-right:30px">Hoàn tất đơn hàng</label>
+                            <br /><br />
+                            <div class="form-group primary-form-group small">Đơn hàng</div>
+                            <div class="form-group primary-form-group font-weight-bold" style="color:#ee4d2d">
+                                @String.Format("{0:0,0₫}", TongTien)
+                            </div>
+                            <div class="form-group primary-form-group small">Phí vận chuyển</div>
+                            <div class="form-group primary-form-group font-weight-bold" style="color:#ee4d2d;">
+                                0₫
+                            </div>
+                            <div class="form-group primary-form-group small">Mã giảm giá</div>
+                            <div class="form-group primary-form-group">
+                                <input type="text" class="form-control" placeholder="Nhập mã giảm giá">
+                            </div>
+                            <div class="form-group primary-form-group">Tổng cộng</div>
+                            <div class="form-group primary-form-group font-weight-bold" style="color:#ee4d2d; font-size:20px">
+                                @String.Format("{0:0,0₫}", TongTien)
+                            </div>
+                            <div class="form-group primary-form-group">
+                                <button type="submit" class="btn btn-primary">Hoàn tất đơn hàng</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="returne-continue-shop">
+                            <a href="~/" class="continueshoping"><i class="fa fa-chevron-left"></i>Tiếp tục mua hàng</a>
+                            <a href="" id="thanh-toan" type="submit" class="procedtocheckout">Đặt hàng<i class="fa fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        }
+    </div>
+</section>

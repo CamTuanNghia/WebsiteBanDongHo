@@ -1,0 +1,11 @@
+﻿@model IEnumerable<WatchStore.Models.MCategory>
+
+@foreach (var item in Model)
+{
+    <li class="submenu-item">
+        <a href="~/@item.Slug" class="submenu-link">@item.Name</a>
+    </li>
+
+}
+
+

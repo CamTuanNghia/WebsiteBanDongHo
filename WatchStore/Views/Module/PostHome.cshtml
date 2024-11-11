@@ -1,0 +1,18 @@
+﻿@model IEnumerable<WatchStore.Models.MPost>
+
+@foreach (var item in Model)
+{
+    <a href="~/@item.Slug" class="item">
+        <div class="latest-news-post">
+            <div class="single-latest-post">
+                <img src="~/Public/library/post/@item.Img" alt="@item.Title" height="120px;" />
+                <h2>@item.Title</h2>
+                <p>@item.MetaDesc</p>
+                <div class="latest-post-info">
+                    <i class="fa fa-calendar"></i><span>@String.Format("{0:dd-MM-yyyy -  hh:mm:ss}", item.Updated_At)</span>
+                </div>
+           
+            </div>
+        </div>
+    </a>
+}

@@ -1,0 +1,11 @@
+﻿@model IEnumerable<WatchStore.Models.MProduct>
+@foreach (var item in Model)
+{
+    <ul>
+        <li style="overflow:auto">
+            <img src="~/Public/library/product/@item.Image" alt="@item.Name" width="50px" height="50px" style="float:left ; display:block; " />
+            <a href="~/@item.Slug"><span class="cat-thumb hidden-md hidden-sm hidden-xs"></span>@item.Name<i class="fa fa-angle-right"></i></a>
+        </li>
+
+    </ul>
+}    

@@ -1,0 +1,166 @@
+﻿
+@{
+    ViewBag.Title = "Bảng điều khiển";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+
+        <div class="col-lg-3">
+            <div class="widget style1 lazur-bg">
+                <div class="row">
+                    <div class="col-3">
+                        <i class="fa fa-cart-plus fa-5x"></i>
+                    </div>
+                    <div class="col-9 text-right">
+                        <span> Đơn hàng mới</span>
+                        <h2 class="font-bold">@ViewBag.CountOrderCancel</h2>
+                        <a href="@Url.Action("Index","Order")" title="Order" target="_blank" style="color: Black"><span>  Truy cập ngay</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="widget style1 lazur-bg">
+                <div class="row">
+                    <div class="col-3">
+                        <i class="fa fa-shopping-bag fa-5x"></i>
+                    </div>
+                    <div class="col-9 text-right">
+                        <span> Đơn hàng thanh toán</span>
+                        <h2 class="font-bold">@ViewBag.CountOrderSuccess</h2>
+                        <a href="@Url.Action("Index","Order")" title="Order" target="_blank" style="color: Black"><span>  Truy cập ngay</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="widget style1 lazur-bg">
+                <div class="row">
+                    <div class="col-3">
+                        <i class="fa fa-id-card fa-5x"></i>
+                    </div>
+                    <div class="col-9 text-right">
+                        <span> Liên hệ chưa trả lời</span>
+                        <h2 class="font-bold">@ViewBag.CountContactDoneReply</h2>
+                        <a href="@Url.Action("Index","Contact")" title="Contact" target="_blank" style="color: Black"><span>  Truy cập ngay</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="widget style1 lazur-bg">
+                <div class="row">
+                    <div class="col-3">
+                        <i class="fa fa-users fa-5x"></i>
+                    </div>
+                    <div class="col-9 text-right">
+                        <span> Khách hàng</span>
+                        <h2 class="font-bold">@ViewBag.CountUser</h2>
+                        <a href="@Url.Action("Index","Users")" title="User" target="_blank" style="color: Black"><span>  Truy cập ngay</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nút thống kê sản phẩm bán chạy nhất -->
+        <div class="col-lg-3">
+            <div class="widget style1 lazur-bg">
+                <div class="row">
+                    <div class="col-3">
+                        <i class="fa fa-line-chart fa-5x"></i>
+                    </div>
+                    <div class="col-9 text-right">
+                        <span> Sản phẩm bán chạy</span>
+                        <h2 class="font-bold"> <!-- Số lượng hoặc chỉ số khác --></h2>
+                        <a href="@Url.Action("TopSellingProducts", "Product", new { count = 5 })" class="btn btn-xs btn-primary">Xem thống kê</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nút thống kê sản phẩm không bán được -->
+        <div class="col-lg-3">
+            <div class="widget style1 lazur-bg">
+                <div class="row">
+                    <div class="col-3">
+                        <i class="fa fa-exclamation-circle fa-5x"></i>
+                    </div>
+                    <div class="col-9 text-right">
+                        <span> Sản phẩm không bán được</span>
+                        <h2 class="font-bold"> <!-- Số lượng hoặc chỉ số khác --></h2>
+                        <a href="@Url.Action("NonSellingProducts", "Product", new { count = 5 })" class="btn btn-xs btn-primary">Xem thống kê</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h1>Thống kê doanh thu tháng @ViewBag.ThisMonth năm @ViewBag.ThisYear</h1>
+    <div id="piechart" style="width:30%;float:left;height:400px"></div>
+    <div id="chart_div" style="width: 70%;float: left; height: 400px;overflow-x: auto;white-space: nowrap;"></div>
+</div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    // Load google charts
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    // Draw the chart and set the chart values
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Task', 'Tình Trạng'],
+            ['Thành công', @ViewBag.countOrderSuccessThisMouth],
+            ['Đã hủy', @ViewBag.countOrderCancelThisMouth],
+            ['Đang chờ', @ViewBag.countOrderWaitingThisMouth],
+            ['Đang gửi', @ViewBag.countOrderSendingThisMouth]
+        ]);
+
+        var options = { 'title': 'Trạng thái'};
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+    }
+</script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['bar'] });
+    google.charts.setOnLoadCallback(drawStuff);
+
+    function drawStuff() {
+        
+        var d = [['Ngày', 'Doanh Thu']];
+        var yourJavaScriptArray = @Html.Raw(Json.Encode(@ViewBag.dataBarChar));
+        for (var i = 0; i < yourJavaScriptArray.length; i++) {
+            var j = i;
+            var a = ['Ngày' + (i+1), yourJavaScriptArray[i]];
+            d.push(a);
+        }
+
+        var data = new google.visualization.arrayToDataTable(d);
+
+        var options = {
+        title: 'Thống kê theo ngày !',
+        legend: { position: 'none' },
+        chart: {
+            title: 'Thống kê theo ngày !',
+            subtitle: ''
+        },
+            bars: 'vertical', // Required for Material Bar Charts.
+        axes: {
+            x: {
+                0: { side: 'bottom', label: '' } // Top x-axis.
+            }
+        },
+        bar: { groupWidth: "100%" }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    };
+</script>
+
+
+

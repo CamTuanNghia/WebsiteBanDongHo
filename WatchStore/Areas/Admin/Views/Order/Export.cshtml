@@ -1,0 +1,37 @@
+﻿@model IEnumerable<WatchStore.Models.ListOrder>
+
+@{
+    ViewBag.Title = "Danh sách đơn hàng";
+}
+
+<h2>Danh sách đơn hàng</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên khách hàng</th>
+            <th>Trạng thái</th>
+            <th>Ngày tạo</th>
+            <th>Ngày xuất</th>
+            <th>Số lượng</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ID</td>
+                <td>@item.CustomerName</td>
+                <td>@item.Status</td>
+                <td>@item.CreateDate</td>
+                <td>@item.ExportDate</td>
+                <td>@item.SAmount</td>
+                <td>
+                    <a href="@Url.Action("ExportInvoice", "Order", new { id = item.ID })" class="btn btn-success">Xuất hóa đơn</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
